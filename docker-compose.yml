@@ -1,0 +1,30 @@
+volumes:
+  postgres_storage:
+
+networks:
+  excel_parser_bridge:
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    hostname: postgres
+    container_name: postgres_excel_parser
+    networks: [excel_parser_bridge]
+    ports:
+      - 54321:5432
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    volumes:
+      - postgres_storage:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -h localhost -U ${POSTGRES_USER} -d ${POSTGRES_DB}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
