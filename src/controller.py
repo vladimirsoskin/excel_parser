@@ -15,7 +15,7 @@ from src.repository import CategoryRepository, FileRepository, CellRepository
 app = FastAPI(title="FastAPI Excel Parser")
 
 DBSessionDep = Annotated[Session, Depends(get_session)]
-Str256 = Annotated[str, Field(min_length=1, max_length=256)]
+Str255 = Annotated[str, Field(min_length=1, max_length=255)]
 
 
 def error_response(error_text: str) -> JSONResponse:
@@ -24,7 +24,7 @@ def error_response(error_text: str) -> JSONResponse:
 
 @app.post("/create_category")
 async def create_category(
-    category_name: Str256, region: Str256, type: Str256, db_session: DBSessionDep
+    category_name: Str255, region: Str255, type: Str255, db_session: DBSessionDep
 ):
     category_repo = CategoryRepository(db_session)
     if category_repo.get(category_name):
@@ -40,7 +40,7 @@ async def create_category(
 
 @app.post("/upload_file")
 async def upload_excel(
-    category_name: Str256, file: UploadFile, db_session: DBSessionDep
+    category_name: Str255, file: UploadFile, db_session: DBSessionDep
 ):
     if file.content_type not in (
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -93,7 +93,7 @@ async def upload_excel(
                     cell_repo.create(file_id=db_file.id, str_value=val)
                     str_values += 1
                 else:
-                    print(f"TODO !!! non-number, non-string value {val}")
+                    print(f"non-number, non-string value {val}")
                     other_values += 1
 
     return {
@@ -105,7 +105,7 @@ async def upload_excel(
 
 
 @app.get("/sum_type")
-def sum_type(type: Str256, db_session: DBSessionDep):
+def sum_type(type: Str255, db_session: DBSessionDep):
     category_repo = CategoryRepository(db_session)
     sum = category_repo.sum_type(type)
     return {
@@ -114,7 +114,7 @@ def sum_type(type: Str256, db_session: DBSessionDep):
 
 
 @app.get("/find_regions")
-def find_regions(search_term: Str256, db_session: DBSessionDep):
+def find_regions(search_term: Str255, db_session: DBSessionDep):
     category_repo = CategoryRepository(db_session)
     regions = category_repo.find_regions(search_term)
     return {

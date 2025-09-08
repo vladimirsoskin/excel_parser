@@ -26,21 +26,15 @@ def _create_session():
         _init_engine()
     SessionLocal = sessionmaker(
         bind=ENGINE,
-        expire_on_commit=False,  # TODO add description why
-        autoflush=True,
-        autocommit=False,  # TODO why ???
-        future=True,  # TODO why ???
+        expire_on_commit=False, # no reason to use it, we dont have update logic, so object can be used after commit
+        autoflush=True, # default but still goot to set excplicitly
+        autocommit=False,  # default but still goot to set excplicitly
     )
     return SessionLocal()
 
 
-# def init_schema() -> None: TODO how to use it?
-#     """Run once at startup (or use Alembic migrations)."""
-#     Base.metadata.create_all(_engine)
-
-
 def get_session():
-    """Yield a SQLAlchemy Session and always close it."""
+    # Yield a SQLAlchemy Session and always close it
     session = _create_session()
     try:
         yield session

@@ -4,9 +4,9 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm;
 -- Categories
 CREATE TABLE IF NOT EXISTS categories (
   id          SERIAL PRIMARY KEY,
-  name        VARCHAR(256) NOT NULL,
-  region      VARCHAR(256) NOT NULL,
-  type        VARCHAR(256) NOT NULL
+  name        VARCHAR(255) NOT NULL,
+  region      VARCHAR(255) NOT NULL,
+  type        VARCHAR(255) NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_categories_type  ON categories(type);
 CREATE INDEX IF NOT EXISTS idx_categories_name  ON categories(name);
@@ -15,7 +15,7 @@ CREATE INDEX IF NOT EXISTS idx_categories_name  ON categories(name);
 CREATE TABLE IF NOT EXISTS files (
   id           SERIAL PRIMARY KEY,
   category_id  SERIAL NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
-  name         VARCHAR(256) NOT NULL,
+  name         VARCHAR(255) NOT NULL,
   binary_data  BYTEA NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_files_category_id ON files(category_id);

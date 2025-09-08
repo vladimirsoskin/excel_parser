@@ -21,11 +21,11 @@ class Base(DeclarativeBase):
 class Category(Base):
     __tablename__ = "categories"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(String(256), nullable=False)
-    region: Mapped[str] = mapped_column(String(256), nullable=False)
-    type: Mapped[str] = mapped_column(String(256), nullable=False)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    region: Mapped[str] = mapped_column(String(255), nullable=False)
+    type: Mapped[str] = mapped_column(String(255), nullable=False)
     files: Mapped[List["File"]] = relationship(
-        back_populates="category", cascade="all, delete-orphan" #TODO do we need it?
+        back_populates="category", cascade="all, delete-orphan"
     )
 
     __table_args__ = (
@@ -40,7 +40,7 @@ class File(Base):
     category_id: Mapped[int] = mapped_column(
         ForeignKey("categories.id", ondelete="CASCADE"), nullable=False
     )
-    name: Mapped[str] = mapped_column(String(256), nullable=False)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
     binary_data: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)
     category: Mapped["Category"] = relationship(back_populates="files")
     cells: Mapped[List["Cell"]] = relationship(
@@ -68,7 +68,7 @@ class Cell(Base):
         ),
         Index("idx_cells_file_id", "file_id"),
         Index("idx_cells_float_value", "float_value"),
-        # GIN trigram index for fast ILIKE '%term%' on str_value TODO change to better comment
+        # GIN trigram index for fast substring search on str_value
         # Equivalent to: CREATE INDEX idx_cells_str_trgm ON cells USING GIN (str_value gin_trgm_ops);
         Index(
             "idx_cells_str_trgm",
